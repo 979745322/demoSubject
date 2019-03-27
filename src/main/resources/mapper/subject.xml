@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rex.mapper.SubjectMapper">
+    <resultMap id="subject" type="com.rex.entity.Subject">
+        <result column="ID" property="id"/>
+        <result column="TITLE" property="title"/>
+    </resultMap>
+    <resultMap id="subjectItems" type="com.rex.entity.SubjectItems">
+        <result column="ID" property="id"/>
+        <result column="SUBJECT_ID" property="subjectId"/>
+        <result column="OPTIONS" property="option"/>
+        <result column="CONTENT" property="content"/>
+    </resultMap>
+    <!-- 新增题目 -->
+    <insert id="addSubject" useGeneratedKeys="true" keyProperty="id">
+        insert into tb_subject(
+        TITLE
+        )values (
+        #{title}
+        )
+    </insert>
+
+    <!-- 新增题目选项 -->
+    <insert id="addSubjectItems">
+        insert into tb_subject_items(
+        SUBJECT_ID,
+        OPTIONS,
+        CONTENT
+        )values
+        <foreach collection="subject.subjectItems" item="item" separator=",">
+            (
+            #{subject.id},
+            #{item.option},
+            #{item.content}
+            )
+        </foreach>
+    </insert>
+
+    <!-- 新增题目答案 -->
+    <insert id="addSubjectAnswer">
+        insert into tb_answer(
+        SUBJECT_ID,
+        ANSWER
+        )values (
+        #{id},
+        #{answer}
+        )
+    </insert>
+</mapper>
