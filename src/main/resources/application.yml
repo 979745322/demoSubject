@@ -3,11 +3,11 @@ server:
   servlet:
     context-path: /
 
-spring:
-  mvc:
-    view:
-      prefix: /
-      suffix: .html
+#spring:
+#  mvc:
+#    view:
+#      prefix: /
+#      suffix: .html
 
 mybatis:
   mapper-locations: classpath:mapper/*.xml

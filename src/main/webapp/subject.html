@@ -3,11 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-
+    <link href="/css/subjectpage.css" rel="stylesheet">
 </head>
 <body>
 <h1>SUBJECT</h1>
+    <div>
+        <button onclick="selectSubject()">添加选择题</button>
+        <button onclick="judgeSubject()">添加判断题</button>
+    </div>
+    <div id="div_selectSubject" class="">
+        <form>
+            <label>题目:<textarea name="title"></textarea></label><br>
+            <label>A:<input type="text" name="A"></label><br>
+            <label>B:<input type="text" name="B"></label><br>
+            <label>C:<input type="text" name="C"></label><br>
+            <label>D:<input type="text" name="D"></label><br>
+            <label>
+                答案:<input type="radio" name="answer" value="A" checked="checked">A
+                <input type="radio" name="answer" value="B">B
+                <input type="radio" name="answer" value="C">C
+                <input type="radio" name="answer" value="D">D
+            </label><br>
+        </form>
+        <label><button onclick="addSelectSubject()">添加</button></label>
+        <label><input type="reset" name="reset" value="重置"></label><br>
+    </div>
 </body>
-<script src="js/jquery-3.3.1.min.js"></script>
-<script src="js/ajaxrequest.js"></script>
+<script src="/js/jquery-3.3.1.min.js"></script>
+<script src="/js/ajaxrequest.js"></script>
+<script src="/js/subjectpage.js"></script>
 </html>

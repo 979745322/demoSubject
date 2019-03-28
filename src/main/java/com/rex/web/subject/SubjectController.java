@@ -4,10 +4,10 @@ import com.google.common.collect.Lists;
 import com.rex.entity.Subject;
 import com.rex.entity.SubjectItems;
 import com.rex.service.SubjectService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -16,7 +16,8 @@ import static com.rex.web.WebURIMappingConstant.URI_SUBJECT;
 /**
  * 题目控制层
  */
-@Controller
+@Slf4j
+@RestController
 @RequestMapping(URI_SUBJECT)
 public class SubjectController {
 
@@ -32,7 +33,12 @@ public class SubjectController {
         return "subject";
     }
 
-    @ResponseBody
+    @RequestMapping("/testAdd")
+    public String testAdd(Subject subject){
+        log.info("subject:{}",subject);
+        return "subject";
+    }
+
     @RequestMapping("/add")
     public String addSubject(){
         final Subject subject = new Subject();

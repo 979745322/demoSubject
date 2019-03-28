@@ -26,16 +26,15 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     public Boolean addSubject(Subject subject) {
+        // 添加题目实体
         subjectMapper.addSubject(subject);
-        log.info("list========{}",subject.getSubjectItems()
-                .stream()
-                .filter(subItem -> {
-                    subItem.setSubjectId(subject.getId());
-                    return true;
-                })
-                .collect(Collectors.toList()));
+
+        //添加题目选项
         addSubjectItems(subject);
+
+        //添加题目答案
         addSubjectAnswer(subject);
+
         return Boolean.TRUE;
     }
 
