@@ -1,15 +1,13 @@
 package com.rex.service.impl;
 
 import com.rex.entity.Subject;
-import com.rex.entity.SubjectItems;
 import com.rex.mapper.SubjectMapper;
 import com.rex.service.SubjectService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 题目接口实现类
@@ -25,26 +23,64 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     @Override
-    public Boolean addSubject(Subject subject) {
-        // 添加题目实体
-        subjectMapper.addSubject(subject);
+    public String addSubject(Subject subject) {
+        try {
+            // 添加题目实体
+            subjectMapper.addSubject(subject);
+            // 添加题目选项
+            addSubjectItems(subject);
+            // 添加题目答案
+            addSubjectAnswer(subject);
 
-        //添加题目选项
-        addSubjectItems(subject);
+        }catch(Exception e){
+            return "添加题目失败，请正确填写题目！";
+        }
 
-        //添加题目答案
-        addSubjectAnswer(subject);
-
-        return Boolean.TRUE;
+        return "添加成功";
     }
 
     @Override
-    public Boolean addSubjectItems(Subject subject) {
-        return subjectMapper.addSubjectItems(subject)>0;
+    public Integer addSubjectItems(Subject subject) {
+        return subjectMapper.addSubjectItems(subject);
     }
 
     @Override
-    public Boolean addSubjectAnswer(Subject subject) {
-        return subjectMapper.addSubjectAnswer(subject)>0;
+    public Integer addSubjectAnswer(Subject subject) {
+        return subjectMapper.addSubjectAnswer(subject);
+    }
+
+    @Override
+    public Subject selectSubject() {
+        try {
+            Long subId = 1L;
+            final Subject subject = subjectMapper.selectSubjectById(subId);
+            if(subject!=null){
+                subject.setSubjectItems(subjectMapper.selectSubjectItemsById(subId));
+                subject.setSubjectAnswers(subjectMapper.selectSubjectAnswersById(subId));
+            }
+            return subject;
+        }catch(Exception e){
+            return null;
+        }
+
+    }
+
+    private Long LongRandom(){
+        Long subId = 1L;
+        Long n = subjectMapper.selectSubjectCount();
+        Long x[] = new Long[Integer.valueOf(String.valueOf(n))];
+        for(Long i = 0L; i < n; i++)
+        {
+            x[Integer.valueOf(String.valueOf(i))] = i+1;
+        }
+        for(int i = 0; i < 1; i++)
+        {
+            int t = (int)(Math.random()*n)+1;
+            Long temp = x[i];
+            x[i] = x[t];
+            x[t] = temp;
+            System.out.println(x[i]);
+        }
+        return null;
     }
 }

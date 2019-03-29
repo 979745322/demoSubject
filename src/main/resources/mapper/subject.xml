@@ -12,6 +12,11 @@
         <result column="OPTIONS" property="option"/>
         <result column="CONTENT" property="content"/>
     </resultMap>
+    <resultMap id="subjectAnswers" type="com.rex.entity.SubjectAnswers">
+        <result column="ID" property="id"/>
+        <result column="SUBJECT_ID" property="subjectId"/>
+        <result column="ANSWER" property="answer"/>
+    </resultMap>
     <!-- 新增题目 -->
     <insert id="addSubject" useGeneratedKeys="true" keyProperty="id">
         insert into tb_subject(
@@ -42,9 +47,50 @@
         insert into tb_answer(
         SUBJECT_ID,
         ANSWER
-        )values (
-        #{id},
-        #{answer}
-        )
+        )values
+        <foreach collection="subject.subjectAnswers" item="item" separator=",">
+            (
+            #{subject.id},
+            #{item.answer}
+            )
+        </foreach>
     </insert>
+
+    <!-- 根据id查找题目 -->
+    <select id="selectSubjectById" resultType="subject">
+        select
+        ts.ID id,
+        ts.TITLE title
+        from tb_subject ts
+        where ts.ID = #{id}
+        and ts.DELETE_FLAG = '1'
+    </select>
+
+    <!-- 根据id查找题目选项 -->
+    <select id="selectSubjectItemsById" resultType="subjectItems">
+        select
+        tsi.ID,
+        tsi.SUBJECT_ID,
+        tsi.OPTIONS,
+        tsi.CONTENT
+        from tb_subject_items tsi
+        where tsi.SUBJECT_ID = #{id}
+    </select>
+
+    <!-- 根据id查找题目答案 -->
+    <select id="selectSubjectAnswersById" resultType="subjectAnswers">
+        select
+        ta.ID id,
+        ta.SUBJECT_ID,
+        ts.TITLE title
+        from tb_answer ta
+        where ta.SUBJECT_ID = #{id}
+    </select>
+
+    <!-- 查找题目数量 -->
+    <select id="selectSubjectCount" resultType="Long">
+        select
+        count(*)
+        from tb_subject
+    </select>
 </mapper>

@@ -1,6 +1,7 @@
 package com.rex.mapper;
 
 import com.rex.entity.Subject;
+import com.rex.entity.SubjectAnswers;
 import com.rex.entity.SubjectItems;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -16,21 +17,55 @@ import java.util.List;
 public interface SubjectMapper {
     /**
      * 新增题目
+     *
      * @param subject 题目实体
      */
-    void addSubject(Subject subject);
+    Integer addSubject(Subject subject);
 
     /**
      * 新增题目
+     *
      * @param subject 题目选项
      * @return 返回新增题目选项结果
      */
-    Long addSubjectItems(@Param("subject") Subject subject);
+    Integer addSubjectItems(@Param("subject") Subject subject);
 
     /**
      * 新增题目答案
+     *
      * @param subject 题目答案
      * @return 返回新增题目答案ID
      */
-    Long addSubjectAnswer(Subject subject);
+    Integer addSubjectAnswer(@Param("subject") Subject subject);
+
+    /**
+     *
+     * 根据ID查找题目
+     * @param id 题目ID
+     * @return 返回查找的题目
+     */
+    Subject selectSubjectById(@Param("id") Long id);
+
+    /**
+     *
+     * 根据ID查找题目选项
+     * @param id 题目ID
+     * @return 返回查找的题目选项
+     */
+    List<SubjectItems> selectSubjectItemsById(@Param("id") Long id);
+
+    /**
+     *
+     * 根据ID查找题目答案
+     * @param id 题目ID
+     * @return 返回查找的题目答案
+     */
+    List<SubjectAnswers> selectSubjectAnswersById(@Param("id") Long id);
+
+    /**
+     *
+     * 查找题目数量
+     * @return 返回查找的题目数量
+     */
+    Long selectSubjectCount();
 }

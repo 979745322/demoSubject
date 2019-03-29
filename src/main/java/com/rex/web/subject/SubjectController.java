@@ -1,15 +1,17 @@
 package com.rex.web.subject;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.rex.entity.Subject;
-import com.rex.entity.SubjectItems;
 import com.rex.service.SubjectService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import javax.validation.Valid;
+import java.util.Map;
 
 import static com.rex.web.WebURIMappingConstant.URI_SUBJECT;
 
@@ -29,40 +31,24 @@ public class SubjectController {
     }
 
     @RequestMapping("/")
-    public String index(){
+    public String index() {
         return "subject";
     }
 
-    @RequestMapping("/testAdd")
-    public String testAdd(Subject subject){
-        log.info("subject:{}",subject);
-        return "subject";
+    @RequestMapping("/addSubject")
+    public Map<String, Object> addSubject(@Valid @RequestBody Subject subject, BindingResult bindingResult) {
+        log.info("addSubject入参:subject{}", subject);
+        final Map<String, Object> map = Maps.newHashMap();
+        if (bindingResult.hasErrors()) {
+            bindingResult.getAllErrors().forEach(error -> log.info("errors:{}",error.getDefaultMessage()));
+            // 错误处理 （抛出异常交给全局处理或者在这里返回自定义的 JSON）
+            map.put("state", bindingResult.getAllErrors().get(0).getDefaultMessage());
+        } else {
+            map.put("state", subjectService.addSubject(subject));
+        }
+
+        return map;
     }
 
-    @RequestMapping("/add")
-    public String addSubject(){
-        final Subject subject = new Subject();
-        subject.setTitle("a");
-        SubjectItems subjectItems1 = new SubjectItems();
-        SubjectItems subjectItems2 = new SubjectItems();
-        SubjectItems subjectItems3 = new SubjectItems();
-        SubjectItems subjectItems4 = new SubjectItems();
-        subjectItems1.setOption("A");
-        subjectItems1.setContent("a");
-        subjectItems2.setOption("B");
-        subjectItems2.setContent("b");
-        subjectItems3.setOption("C");
-        subjectItems3.setContent("c");
-        subjectItems4.setOption("D");
-        subjectItems4.setContent("d");
-        List<SubjectItems> list = Lists.newArrayList();
-        list.add(subjectItems1);
-        list.add(subjectItems2);
-        list.add(subjectItems3);
-        list.add(subjectItems4);
-        subject.setSubjectItems(list);
-        subject.setAnswer("A");
-        subjectService.addSubject(subject);
-        return "success";
-    }
+
 }

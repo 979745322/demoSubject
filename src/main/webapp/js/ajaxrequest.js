@@ -3,9 +3,10 @@ function ajaxdata(action, datastr) {
     $.ajax({
         async: false, // 同步
         url: action,
-        data: datastr,
+        data: JSON.stringify(datastr),
+        contentType: 'application/json; charset=UTF-8',
         type: "POST",
-        dataType: "",
+        dataType: "json",
         success: function (data) {
             console.log(data);
             adata = data;

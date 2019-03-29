@@ -8,10 +8,11 @@
 <body>
 <h1>SUBJECT</h1>
     <div>
-        <button onclick="selectSubject()">添加选择题</button>
+        <button onclick="simpleSubject()">添加单选题</button>
+        <button onclick="multipleSubject()">添加多选题</button>
         <button onclick="judgeSubject()">添加判断题</button>
     </div>
-    <div id="div_selectSubject" class="">
+    <div id="div_simpleSubject" class="displayNone">
         <form>
             <label>题目:<textarea name="title"></textarea></label><br>
             <label>A:<input type="text" name="A"></label><br>
@@ -19,14 +20,44 @@
             <label>C:<input type="text" name="C"></label><br>
             <label>D:<input type="text" name="D"></label><br>
             <label>
-                答案:<input type="radio" name="answer" value="A" checked="checked">A
-                <input type="radio" name="answer" value="B">B
-                <input type="radio" name="answer" value="C">C
-                <input type="radio" name="answer" value="D">D
+                答案:<input type="radio" name="answers" value="A" checked="checked">A
+                <input type="radio" name="answers" value="B">B
+                <input type="radio" name="answers" value="C">C
+                <input type="radio" name="answers" value="D">D
             </label><br>
         </form>
-        <label><button onclick="addSelectSubject()">添加</button></label>
-        <label><input type="reset" name="reset" value="重置"></label><br>
+        <label><button onclick="addSimpleSubject()">添加</button></label>
+        <label><button onclick="clearForm()">重置</button></label>
+    </div>
+
+    <div id="div_multipleSubject" class="displayNone">
+        <form>
+            <label>题目:<textarea name="title"></textarea></label><br>
+            <label>A:<input type="text" name="A"></label><br>
+            <label>B:<input type="text" name="B"></label><br>
+            <label>C:<input type="text" name="C"></label><br>
+            <label>D:<input type="text" name="D"></label><br>
+            <label>
+                答案:<input type="checkbox" name="answers" value="A">A
+                <input type="checkbox" name="answers" value="B">B
+                <input type="checkbox" name="answers" value="C">C
+                <input type="checkbox" name="answers" value="D">D
+            </label><br>
+        </form>
+        <label><button onclick="addMultipleSubject()">添加</button></label>
+        <label><button onclick="clearForm()">重置</button></label>
+    </div>
+
+    <div id="div_judgeSubject" class="displayNone">
+        <form>
+            <label>题目:<textarea name="title"></textarea></label><br>
+            <label>
+                答案:<input type="radio" name="answer" value="A" checked="checked">√
+                <input type="radio" name="answer" value="B">×
+            </label><br>
+        </form>
+        <label><button onclick="addJudgeSubject()">添加</button></label>
+        <label><button onclick="clearForm()">重置</button></label>
     </div>
 </body>
 <script src="/js/jquery-3.3.1.min.js"></script>
