@@ -21,7 +21,6 @@ public class SubjectServiceImpl implements SubjectService {
     public SubjectServiceImpl(SubjectMapper subjectMapper) {
         this.subjectMapper = subjectMapper;
     }
-
     @Override
     public String addSubject(Subject subject) {
         try {
@@ -33,6 +32,7 @@ public class SubjectServiceImpl implements SubjectService {
             addSubjectAnswer(subject);
 
         }catch(Exception e){
+            log.info("e:{}",e);
             return "添加题目失败，请正确填写题目！";
         }
 
@@ -50,19 +50,24 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     @Override
-    public Subject selectSubject() {
+    public Subject selectSubject(Long id) {
         try {
-            Long subId = 1L;
-            final Subject subject = subjectMapper.selectSubjectById(subId);
+            final Subject subject = subjectMapper.selectSubjectById(id);
             if(subject!=null){
-                subject.setSubjectItems(subjectMapper.selectSubjectItemsById(subId));
-                subject.setSubjectAnswers(subjectMapper.selectSubjectAnswersById(subId));
+                subject.setSubjectItems(subjectMapper.selectSubjectItemsById(id));
+                subject.setSubjectAnswers(subjectMapper.selectSubjectAnswersById(id));
             }
             return subject;
         }catch(Exception e){
+            log.info("e:{}",e);
             return null;
         }
 
+    }
+
+    @Override
+    public Long selectSubjectCount() {
+        return subjectMapper.selectSubjectCount();
     }
 
     private Long LongRandom(){

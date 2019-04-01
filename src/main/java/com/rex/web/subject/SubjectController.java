@@ -50,5 +50,24 @@ public class SubjectController {
         return map;
     }
 
+    @RequestMapping("/selectSubject")
+    public Map<String, Object> selectSubject(@RequestBody String id) {
+        System.out.println("id==========="+id);
+        final Map<String, Object> map = Maps.newHashMap();
+        map.put("state", "success");
+        map.put("subject", subjectService.selectSubject(Long.valueOf(id)));
+
+        return map;
+    }
+
+    @RequestMapping("/selectSubjectCount")
+    public Map<String, Object> selectSubjectCount() {
+        final Map<String, Object> map = Maps.newHashMap();
+        map.put("state", "success");
+        map.put("count", subjectService.selectSubjectCount());
+
+        return map;
+    }
+
 
 }

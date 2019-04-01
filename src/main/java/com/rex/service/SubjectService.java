@@ -37,5 +37,12 @@ public interface SubjectService {
      * 查找题目
      * @return 返回查找的题目
      */
-    Subject selectSubject();
+    Subject selectSubject(Long id);
+
+    /**
+     *
+     * 查找题目数量
+     * @return 返回查找的题目数量
+     */
+    Long selectSubjectCount();
 }

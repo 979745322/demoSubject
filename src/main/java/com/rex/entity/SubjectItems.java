@@ -17,7 +17,7 @@ public class SubjectItems {
     private Long subjectId;
 
     // 选项
-    private String option;
+    private String options;
 
     // 选项内容
     @NotBlank(message = "题目选项不能为空！")
@@ -28,7 +28,7 @@ public class SubjectItems {
         return "SubjectItems{" +
                 "id=" + id +
                 ", subjectId=" + subjectId +
-                ", option='" + option + '\'' +
+                ", options='" + options + '\'' +
                 ", content='" + content + '\'' +
                 '}';
     }

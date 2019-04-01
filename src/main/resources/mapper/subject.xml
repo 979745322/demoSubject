@@ -9,7 +9,7 @@
     <resultMap id="subjectItems" type="com.rex.entity.SubjectItems">
         <result column="ID" property="id"/>
         <result column="SUBJECT_ID" property="subjectId"/>
-        <result column="OPTIONS" property="option"/>
+        <result column="OPTIONS" property="options"/>
         <result column="CONTENT" property="content"/>
     </resultMap>
     <resultMap id="subjectAnswers" type="com.rex.entity.SubjectAnswers">
@@ -36,7 +36,7 @@
         <foreach collection="subject.subjectItems" item="item" separator=",">
             (
             #{subject.id},
-            #{item.option},
+            #{item.options},
             #{item.content}
             )
         </foreach>
@@ -69,10 +69,10 @@
     <!-- 根据id查找题目选项 -->
     <select id="selectSubjectItemsById" resultType="subjectItems">
         select
-        tsi.ID,
-        tsi.SUBJECT_ID,
-        tsi.OPTIONS,
-        tsi.CONTENT
+        tsi.ID id,
+        tsi.SUBJECT_ID subjectId,
+        tsi.OPTIONS options,
+        tsi.CONTENT content
         from tb_subject_items tsi
         where tsi.SUBJECT_ID = #{id}
     </select>
@@ -81,8 +81,8 @@
     <select id="selectSubjectAnswersById" resultType="subjectAnswers">
         select
         ta.ID id,
-        ta.SUBJECT_ID,
-        ts.TITLE title
+        ta.SUBJECT_ID subjectId,
+        ta.ANSWER answer
         from tb_answer ta
         where ta.SUBJECT_ID = #{id}
     </select>

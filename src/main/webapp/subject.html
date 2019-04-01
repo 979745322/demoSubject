@@ -11,6 +11,7 @@
         <button onclick="simpleSubject()">添加单选题</button>
         <button onclick="multipleSubject()">添加多选题</button>
         <button onclick="judgeSubject()">添加判断题</button>
+        <button onclick="doSubject()">开始做题</button>
     </div>
     <div id="div_simpleSubject" class="displayNone">
         <form>
@@ -20,7 +21,7 @@
             <label>C:<input type="text" name="C"></label><br>
             <label>D:<input type="text" name="D"></label><br>
             <label>
-                答案:<input type="radio" name="answers" value="A" checked="checked">A
+                答案:<input type="radio" name="answers" value="A">A
                 <input type="radio" name="answers" value="B">B
                 <input type="radio" name="answers" value="C">C
                 <input type="radio" name="answers" value="D">D
@@ -52,15 +53,20 @@
         <form>
             <label>题目:<textarea name="title"></textarea></label><br>
             <label>
-                答案:<input type="radio" name="answer" value="A" checked="checked">√
+                答案:<input type="radio" name="answer" value="A">√
                 <input type="radio" name="answer" value="B">×
             </label><br>
         </form>
         <label><button onclick="addJudgeSubject()">添加</button></label>
         <label><button onclick="clearForm()">重置</button></label>
     </div>
+    <div id="div_doSubject">
+
+    </div>
+
 </body>
 <script src="/js/jquery-3.3.1.min.js"></script>
 <script src="/js/ajaxrequest.js"></script>
 <script src="/js/subjectpage.js"></script>
+<script src="/js/random.js"></script>
 </html>
