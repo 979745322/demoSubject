@@ -27,9 +27,9 @@ function judgeSubject() {
 
 // 清空所有表单
 function clearForm() {
-    $('#div_simpleSubject form').val("");
-    $('#div_multipleSubject form').val("");
-    $('#div_judgeSubject form').val("");
+    $('#div_simpleSubject form')[0].reset();
+    $('#div_multipleSubject form')[0].reset();
+    $('#div_judgeSubject form')[0].reset();
 }
 
 // 新增单选题
@@ -133,8 +133,12 @@ function doSubject() {
     $('#div_judgeSubject').css('display', 'none');
     $('#div_doSubject').css('display', 'block');
     var subList = randNum();
-    console.log(subList);
-    $('#div_doSubject').html(doSub(subList[0].subject));
+    if(subList.length>0){
+        $('#div_doSubject').html(doSub(subList[0].subject));
+    }else{
+
+    }
+
     // $('#div_doSubject').html('<h1>aaa</h1>');
 
 }
@@ -167,7 +171,7 @@ function doSub(sub) {
     }
     subAnswer += '</label><br>';
     var subAffirm = '<label><button onclick="subAnswer(\'subject' + sub.id + '\')">确认</button></label>';
-    var subNext = '<button onclick="doSubject()">下一题</button>';
+    var subNext = '&nbsp;<button onclick="doSubject()">下一题</button>';
     subHtml += subTitle + subItems + subAnswer + '</form>' + subAffirm + subNext;
     return subHtml;
 }
