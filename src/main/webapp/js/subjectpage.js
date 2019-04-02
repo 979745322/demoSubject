@@ -3,6 +3,7 @@ function simpleSubject() {
     $('#div_simpleSubject').css('display', 'block');
     $('#div_multipleSubject').css('display', 'none');
     $('#div_judgeSubject').css('display', 'none');
+    $('#div_doSubject').css('display', 'none');
     clearForm();
 }
 
@@ -11,6 +12,7 @@ function multipleSubject() {
     $('#div_simpleSubject').css('display', 'none');
     $('#div_multipleSubject').css('display', 'block');
     $('#div_judgeSubject').css('display', 'none');
+    $('#div_doSubject').css('display', 'none');
     clearForm();
 }
 
@@ -19,6 +21,7 @@ function judgeSubject() {
     $('#div_simpleSubject').css('display', 'none');
     $('#div_multipleSubject').css('display', 'none');
     $('#div_judgeSubject').css('display', 'block');
+    $('#div_doSubject').css('display', 'none');
     clearForm();
 }
 
@@ -63,7 +66,6 @@ function addSimpleSubject() {
 // 新增多选题
 function addMultipleSubject() {
     var formData = $('#div_multipleSubject form').serializeArray();
-    console.log(formData);
     var subjectItems = [];
     var subjectAnswers = [];
     for (var i = 1; i < formData.length; i++) {
@@ -96,7 +98,6 @@ function addMultipleSubject() {
 // 新增判断题
 function addJudgeSubject() {
     var formData = $('#div_judgeSubject form').serializeArray();
-    console.log(formData);
     var subjectItems = [];
     var judgeTrue = {
         options: "A",
@@ -127,6 +128,10 @@ function addJudgeSubject() {
 
 // 开始做题
 function doSubject() {
+    $('#div_simpleSubject').css('display', 'none');
+    $('#div_multipleSubject').css('display', 'none');
+    $('#div_judgeSubject').css('display', 'none');
+    $('#div_doSubject').css('display', 'block');
     var subList = randNum();
     console.log(subList);
     $('#div_doSubject').html(doSub(subList[0].subject));
@@ -136,29 +141,53 @@ function doSubject() {
 
 // 拼接题目
 function doSub(sub) {
-    var subHtml = '<form>\n';
-    var subTitle = '<label>题目' + sub.id + ':' + sub.title + '</label><br>\n';
-    var subItems = '<label>\n';
+    var subHtml = '<form id="subject' + sub.id + '">';
+    var subTitle = '<label>题目' + sub.id + ':' + sub.title + '</label><br>';
+    var subItems = '';
 
     if (sub.subjectAnswers.length > 1) { // 多选题
         for (var i = 0; i < sub.subjectItems.length; i++) {
-            subItems += '<input type="checkbox" name="answers" value="' + sub.subjectItems[i].options + '">' + sub.subjectItems[i].content + '<br>\n';
+            subItems += '<label><input type="checkbox" name="answers" value="' + sub.subjectItems[i].options + '">' + sub.subjectItems[i].options + ':' + sub.subjectItems[i].content + '</label><br>';
         }
     } else if (sub.subjectItems.length === 2) { // 判断题
         for (var j = 0; j < sub.subjectItems.length; j++) {
             var judgeItems = sub.subjectItems[j].content === "true" ? "√" : "×";
-            subItems += '<input type="radio" name="answers" value="' + sub.subjectItems[j].options + '">' + judgeItems + '<br>\n';
+            subItems += '<input type="radio" id="judgeAnsRadio'+sub.subjectItems[j].options+'" name="answers" value="' + sub.subjectItems[j].options + '"><label for="judgeAnsRadio'+sub.subjectItems[j].options+'">' + sub.subjectItems[j].options + ':' + judgeItems + '</label><br>';
         }
     } else { // 单选题
         for (var k = 0; k < sub.subjectItems.length; k++) {
             if (sub.subjectItems)
-                subItems += '<input type="radio" name="answers" value="' + sub.subjectItems[k].options + '">' + sub.subjectItems[k].content + '<br>\n';
+                subItems += '<input type="radio" id="simpAnsRadio'+sub.subjectItems[k].options+'" name="answers" value="' + sub.subjectItems[k].options + '"><label for="simpAnsRadio'+sub.subjectItems[k].options+'">' + sub.subjectItems[k].options + ':' + sub.subjectItems[k].content + '</label><br>';
         }
     }
-    subItems += '</label><br>';
-    subHtml += subTitle + subItems + '</form>';
+    subItems += '<br>';
+    var subAnswer = '<label id="subject' + sub.id + 'Answer"  class="displayNone">答案:';
+    for (var m = 0; m < sub.subjectAnswers.length; m++) {
+        subAnswer += sub.subjectAnswers[m].answer;
+    }
+    subAnswer += '</label><br>';
+    var subAffirm = '<label><button onclick="subAnswer(\'subject' + sub.id + '\')">确认</button></label>';
+    var subNext = '<button onclick="doSubject()">下一题</button>';
+    subHtml += subTitle + subItems + subAnswer + '</form>' + subAffirm + subNext;
     return subHtml;
 }
+
+function subAnswer(id) {
+    var formData = $('#' + id).serializeArray();
+    var subAnswer = '';
+    for (var i = 0; i < formData.length; i++) {
+        subAnswer += formData[i].value;
+    }
+    $('#' + id + 'Answer').css('display', 'block');
+    var rightAnswer = $('#' + id + 'Answer')[0].innerHTML.split("答案:")[1];
+    if (subAnswer === rightAnswer) {
+        $('#' + id + 'Answer').css('color', 'green');
+    } else {
+        $('#' + id + 'Answer').css('color', 'red');
+    }
+}
+
+
 
 
 
