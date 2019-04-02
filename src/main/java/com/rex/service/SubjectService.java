@@ -1,5 +1,6 @@
 package com.rex.service;
 
+import com.github.pagehelper.PageInfo;
 import com.rex.entity.Subject;
 import com.rex.entity.SubjectItems;
 import org.apache.ibatis.annotations.Param;
@@ -45,4 +46,11 @@ public interface SubjectService {
      * @return 返回查找的题目数量
      */
     Long selectSubjectCount();
+
+    /**
+     * 分页查找题目
+     * @param condition 查询条件
+     * @return 分页查询结果
+     */
+    PageInfo findSubject(SubjectQueryCondition condition);
 }

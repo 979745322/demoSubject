@@ -1,12 +1,16 @@
 package com.rex.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.rex.entity.Subject;
 import com.rex.mapper.SubjectMapper;
+import com.rex.service.SubjectQueryCondition;
 import com.rex.service.SubjectService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
+
+import java.util.List;
 
 
 /**
@@ -21,6 +25,7 @@ public class SubjectServiceImpl implements SubjectService {
     public SubjectServiceImpl(SubjectMapper subjectMapper) {
         this.subjectMapper = subjectMapper;
     }
+
     @Override
     public String addSubject(Subject subject) {
         try {
@@ -31,8 +36,8 @@ public class SubjectServiceImpl implements SubjectService {
             // 添加题目答案
             addSubjectAnswer(subject);
 
-        }catch(Exception e){
-            log.info("e:{}",e);
+        } catch (Exception e) {
+            log.info("e:{}", e);
             return "添加题目失败，请正确填写题目！";
         }
 
@@ -53,13 +58,13 @@ public class SubjectServiceImpl implements SubjectService {
     public Subject selectSubject(Long id) {
         try {
             final Subject subject = subjectMapper.selectSubjectById(id);
-            if(subject!=null){
+            if (subject != null) {
                 subject.setSubjectItems(subjectMapper.selectSubjectItemsById(id));
                 subject.setSubjectAnswers(subjectMapper.selectSubjectAnswersById(id));
             }
             return subject;
-        }catch(Exception e){
-            log.info("e:{}",e);
+        } catch (Exception e) {
+            log.info("e:{}", e);
             return null;
         }
 
@@ -70,17 +75,22 @@ public class SubjectServiceImpl implements SubjectService {
         return subjectMapper.selectSubjectCount();
     }
 
-    private Long LongRandom(){
+    @Override
+    public PageInfo findSubject(SubjectQueryCondition condition) {
+        PageHelper.startPage(condition.getPageNum(), 2);
+        final List<Subject> list = subjectMapper.findSubject(condition);
+        return new PageInfo(list, 5);
+    }
+
+    private Long LongRandom() {
         Long subId = 1L;
         Long n = subjectMapper.selectSubjectCount();
         Long x[] = new Long[Integer.valueOf(String.valueOf(n))];
-        for(Long i = 0L; i < n; i++)
-        {
-            x[Integer.valueOf(String.valueOf(i))] = i+1;
+        for (Long i = 0L; i < n; i++) {
+            x[Integer.valueOf(String.valueOf(i))] = i + 1;
         }
-        for(int i = 0; i < 1; i++)
-        {
-            int t = (int)(Math.random()*n)+1;
+        for (int i = 0; i < 1; i++) {
+            int t = (int) (Math.random() * n) + 1;
             Long temp = x[i];
             x[i] = x[t];
             x[t] = temp;

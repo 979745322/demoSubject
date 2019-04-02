@@ -2,12 +2,14 @@ package com.rex.web.subject;
 
 import com.google.common.collect.Maps;
 import com.rex.entity.Subject;
+import com.rex.service.SubjectQueryCondition;
 import com.rex.service.SubjectService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
@@ -52,7 +54,6 @@ public class SubjectController {
 
     @RequestMapping("/selectSubject")
     public Map<String, Object> selectSubject(@RequestBody String id) {
-        System.out.println("id==========="+id);
         final Map<String, Object> map = Maps.newHashMap();
         map.put("state", "success");
         map.put("subject", subjectService.selectSubject(Long.valueOf(id)));
@@ -65,6 +66,16 @@ public class SubjectController {
         final Map<String, Object> map = Maps.newHashMap();
         map.put("state", "success");
         map.put("count", subjectService.selectSubjectCount());
+
+        return map;
+    }
+
+    @RequestMapping("/findSubject")
+    public Map<String, Object> findSubject(@RequestBody SubjectQueryCondition condition) {
+        log.info("condition:{}",condition);
+        final Map<String, Object> map = Maps.newHashMap();
+        map.put("state", "success");
+        map.put("pageInfo", subjectService.findSubject(condition));
 
         return map;
     }

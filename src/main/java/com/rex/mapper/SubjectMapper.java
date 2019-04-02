@@ -3,6 +3,7 @@ package com.rex.mapper;
 import com.rex.entity.Subject;
 import com.rex.entity.SubjectAnswers;
 import com.rex.entity.SubjectItems;
+import com.rex.service.SubjectQueryCondition;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -68,4 +69,12 @@ public interface SubjectMapper {
      * @return 返回查找的题目数量
      */
     Long selectSubjectCount();
+
+    /**
+     *
+     * 根据条件查找题目
+     * @param condition 查询条件
+     * @return 返回查找的题目
+     */
+    List<Subject> findSubject(SubjectQueryCondition condition);
 }

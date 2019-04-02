@@ -62,8 +62,9 @@
         ts.ID id,
         ts.TITLE title
         from tb_subject ts
-        where ts.ID = #{id}
-        and ts.DELETE_FLAG = '1'
+        where ts.DELETE_FLAG = '1'
+            and ts.ID = #{id}
+
     </select>
 
     <!-- 根据id查找题目选项 -->
@@ -92,5 +93,19 @@
         select
         count(*)
         from tb_subject
+    </select>
+
+    <!-- 根据条件查找题目 -->
+    <select id="findSubject" resultType="subject">
+        select
+        ts.ID id,
+        ts.TITLE title
+        from tb_subject ts
+        where ts.DELETE_FLAG = '1'
+        <if test="title!=null and title!=''">
+            and ts.TITLE = #{title}
+        </if>
+
+
     </select>
 </mapper>
