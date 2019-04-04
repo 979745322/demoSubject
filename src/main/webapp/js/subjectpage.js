@@ -4,6 +4,7 @@ function simpleSubject() {
     $('#div_multipleSubject').css('display', 'none');
     $('#div_judgeSubject').css('display', 'none');
     $('#div_doSubject').css('display', 'none');
+    $('#div_findSubject').css('display', 'none');
     clearForm();
 }
 
@@ -13,6 +14,7 @@ function multipleSubject() {
     $('#div_multipleSubject').css('display', 'block');
     $('#div_judgeSubject').css('display', 'none');
     $('#div_doSubject').css('display', 'none');
+    $('#div_findSubject').css('display', 'none');
     clearForm();
 }
 
@@ -22,7 +24,18 @@ function judgeSubject() {
     $('#div_multipleSubject').css('display', 'none');
     $('#div_judgeSubject').css('display', 'block');
     $('#div_doSubject').css('display', 'none');
+    $('#div_findSubject').css('display', 'none');
     clearForm();
+}
+
+// 点击查找题目按钮
+function findSubject() {
+    $('#div_simpleSubject').css('display', 'none');
+    $('#div_multipleSubject').css('display', 'none');
+    $('#div_judgeSubject').css('display', 'none');
+    $('#div_doSubject').css('display', 'none');
+    $('#div_findSubject').css('display', 'block');
+    querySubmit(1);
 }
 
 // 清空所有表单
@@ -30,6 +43,19 @@ function clearForm() {
     $('#div_simpleSubject form')[0].reset();
     $('#div_multipleSubject form')[0].reset();
     $('#div_judgeSubject form')[0].reset();
+}
+
+// 开始做题
+function doSubject() {
+    $('#div_simpleSubject').css('display', 'none');
+    $('#div_multipleSubject').css('display', 'none');
+    $('#div_judgeSubject').css('display', 'none');
+    $('#div_doSubject').css('display', 'block');
+    $('#div_findSubject').css('display', 'none');
+    var subList = randNum();
+    if (subList.length > 0) {
+        $('#div_doSubject').html(doSub(subList[0]));
+    }
 }
 
 // 新增单选题
@@ -126,23 +152,6 @@ function addJudgeSubject() {
     }
 }
 
-// 开始做题
-function doSubject() {
-    $('#div_simpleSubject').css('display', 'none');
-    $('#div_multipleSubject').css('display', 'none');
-    $('#div_judgeSubject').css('display', 'none');
-    $('#div_doSubject').css('display', 'block');
-    var subList = randNum();
-    if (subList.length > 0) {
-        $('#div_doSubject').html(doSub(subList[0]));
-    } else {
-
-    }
-
-    // $('#div_doSubject').html('<h1>aaa</h1>');
-
-}
-
 // 拼接题目
 function doSub(sub) {
     var subHtml = '<form id="subject' + sub.id + '">';
@@ -171,8 +180,8 @@ function doSub(sub) {
         subAnswer.push(sub.subjectAnswers[m].answer);
     }
     subAnswer.push('</label><br>');
-    var subAffirm = '<label><button onclick="subAnswer(\'subject' + sub.id + '\')">确认</button></label>';
-    var subNext = '&nbsp;<button onclick="doSubject()">下一题</button>';
+    var subAffirm = '<label><button class="btn btn-success" onclick="subAnswer(\'subject' + sub.id + '\')">确认</button></label>';
+    var subNext = '&nbsp;<button class="btn btn-primary" onclick="doSubject()">下一题</button>';
     subHtml += subTitle + subItems.join("") + subAnswer.join("") + '</form>' + subAffirm + subNext;
     return subHtml;
 }
@@ -193,12 +202,86 @@ function subAnswer(id) {
     }
 }
 
-function findSubject() {
+// 根据题目查询分页
+function querySubmit(pageNum) {
     var pageData = {
-        pageNum: 1,
-        title: ""
+        pageNum: pageNum,
+        title: $("#searchTitle")[0].value
     };
-    console.log(ajaxdata("/subject/findSubject", pageData));
+    var pageInfo = ajaxdata("/subject/findSubject", pageData).pageInfo;
+    $('#selectSubTable').html(selectTable(pageInfo));
+    $("#selectSubTable").trigger("create");
+    pageInfoBar(pageInfo, "div_pageBar");
+}
+
+// 拼接查询的题目
+function selectTable(pageInfo) {
+    var list = pageInfo.list;
+    var table = [];
+    table.push("<table class=\"table table-striped table_searchSub\">");
+    var tableFirstTr = "<tr class=\"table_tr_title\">\n" +
+        "                    <td>序号</td>\n" +
+        "                    <td>题目</td>\n" +
+        "                    <td>选项</td>\n" +
+        "                    <td>答案</td>\n" +
+        "                    <td>操作</td>\n" +
+        "                </tr>";
+    table.push(tableFirstTr);
+    for (var i = 0; i < list.length; i++) {
+        var num = (pageInfo.pageNum - 1) * pageInfo.pageSize + i + 1;
+        var tableTr = [];
+        tableTr.push("<tr>");
+        // 序号
+        tableTr.push("<td>" + num + "</td>");
+        // 题目
+        tableTr.push("<td>" + list[i].title + "</td>");
+        // 选项
+        var items = [];
+        items.push("<td>");
+        for (var j = 0; j < list[i].subjectItems.length; j++) {
+            var subOptions = list[i].subjectItems[j].options;
+            var subContent;
+            if (list[i].subjectItems.length === 2) {
+                subContent = list[i].subjectItems[j].content === "true" ? "√" : "×";
+            } else {
+                subContent = list[i].subjectItems[j].content;
+            }
+            items.push(subOptions + ":" + subContent + "<br>");
+        }
+        items.push("</td>");
+        tableTr.push(items.join(""));
+        // 答案
+        var answers = [];
+        answers.push("<td>");
+        for (var k = 0; k < list[i].subjectAnswers.length; k++) {
+            answers.push(list[i].subjectAnswers[k].answer);
+        }
+        answers.push("</td>");
+        tableTr.push(answers.join(""));
+        // 操作
+        tableTr.push("<td><button onclick=\"updateSub(" + list[i].id + "," + pageInfo.pageNum + ")\" class=\"btn btn-info\">编辑</button>&nbsp;&nbsp;<button onclick=\"deleteSub(" + list[i].id + "," + pageInfo.pageNum + ")\" class=\"btn btn-danger\">删除</button></td>");
+
+        tableTr.push("</tr>");
+        table.push(tableTr.join(""));
+    }
+    table.push("</table>");
+    return table.join("");
+}
+
+// 点击编辑按钮
+function updateSub(id, pageNum) {
+    console.log("updateSub" + id);
+    ajaxdata("/subject/selectSubject", subNum[subNumIndex]).subject;
+}
+
+// 点击删除按钮
+function deleteSub(id, pageNum) {
+    confirm("确认删除该题目？") ? alert(ajaxdata("/subject/deleteSubject", id).state) : false;
+    querySubmit(pageNum);
+}
+
+function updateSubject() {
+
 }
 
 

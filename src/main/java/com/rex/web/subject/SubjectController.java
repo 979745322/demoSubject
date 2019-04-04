@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
@@ -45,8 +44,10 @@ public class SubjectController {
             bindingResult.getAllErrors().forEach(error -> log.info("errors:{}",error.getDefaultMessage()));
             // 错误处理 （抛出异常交给全局处理或者在这里返回自定义的 JSON）
             map.put("state", bindingResult.getAllErrors().get(0).getDefaultMessage());
-        } else {
+        } else if(subject.getId()==null) {
             map.put("state", subjectService.addSubject(subject));
+        } else{
+            map.put("state", subjectService.updateSubject(subject));
         }
 
         return map;
@@ -57,6 +58,14 @@ public class SubjectController {
         final Map<String, Object> map = Maps.newHashMap();
         map.put("state", "success");
         map.put("subject", subjectService.selectSubject(Long.valueOf(id)));
+
+        return map;
+    }
+
+    @RequestMapping("/deleteSubject")
+    public Map<String, Object> deleteSubject(@RequestBody String id) {
+        final Map<String, Object> map = Maps.newHashMap();
+        map.put("state", subjectService.deleteSubject(Long.valueOf(id)));
 
         return map;
     }
@@ -79,6 +88,5 @@ public class SubjectController {
 
         return map;
     }
-
 
 }

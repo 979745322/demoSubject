@@ -1,8 +1,40 @@
 .displayNone {
     display: none;
 }
-.div_sub_margin{
+
+.div_sub_margin {
     margin: 20px 0 0 40px;
+}
+
+.div_sub_panel {
+    margin: 20px 0 0 40px;
+    width: 350px;
+}
+
+.table_tr_title {
+    font-weight: bold;
+}
+
+.span_pageBar {
+    margin-right: 30px;
+}
+
+.table_searchSub {
+    width: 100%;
+    border: 1px solid #dddddd;
+}
+
+.table_searchSub tr td {
+    text-align: center;
+}
+
+.table_searchSub tr td:last-child {
+    width: 20%;
+    text-align: center;
+}
+
+.div_searchSub {
+    width: 80%;
 }
 
 

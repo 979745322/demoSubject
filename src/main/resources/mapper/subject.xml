@@ -103,9 +103,16 @@
         from tb_subject ts
         where ts.DELETE_FLAG = '1'
         <if test="title!=null and title!=''">
-            and ts.TITLE = #{title}
+            and ts.TITLE like concat('%',#{title},'%')
         </if>
 
 
     </select>
+
+    <!-- 根据题目id删除题目 -->
+    <update id="deleteSubject">
+        update tb_subject
+        set DELETE_FLAG = '0'
+        where ID = #{id}
+    </update>
 </mapper>

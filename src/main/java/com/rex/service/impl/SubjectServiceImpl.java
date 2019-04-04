@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -32,9 +33,9 @@ public class SubjectServiceImpl implements SubjectService {
             // 添加题目实体
             subjectMapper.addSubject(subject);
             // 添加题目选项
-            addSubjectItems(subject);
+            subjectMapper.addSubjectItems(subject);
             // 添加题目答案
-            addSubjectAnswer(subject);
+            subjectMapper.addSubjectAnswer(subject);
 
         } catch (Exception e) {
             log.info("e:{}", e);
@@ -45,13 +46,24 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     @Override
-    public Integer addSubjectItems(Subject subject) {
-        return subjectMapper.addSubjectItems(subject);
-    }
+    public String updateSubject(Subject subject) {
+        try {
+            /*// 修改题目实体
+            subjectMapper.updateSubject(subject);
+            // 删除题目选项
+            subjectMapper.deleteSubjectItems(subject);
+            // 删除题目答案
+            subjectMapper.deleteSubjectAnswers(subject);*/
+            // 添加题目选项
+            subjectMapper.addSubjectItems(subject);
+            // 添加题目答案
+            subjectMapper.addSubjectAnswer(subject);
 
-    @Override
-    public Integer addSubjectAnswer(Subject subject) {
-        return subjectMapper.addSubjectAnswer(subject);
+        } catch (Exception e) {
+            log.info("e:{}", e);
+            return "修改题目失败，请正确填写题目！";
+        }
+        return "修改成功";
     }
 
     @Override
@@ -71,31 +83,30 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     @Override
+    public String deleteSubject(Long id) {
+        try {
+            subjectMapper.deleteSubject(id);
+        } catch (Exception e) {
+            log.info("e:{}", e);
+            return "删除失败!";
+        }
+        return "删除成功!";
+    }
+
+    @Override
     public Long selectSubjectCount() {
         return subjectMapper.selectSubjectCount();
     }
 
     @Override
     public PageInfo findSubject(SubjectQueryCondition condition) {
-        PageHelper.startPage(condition.getPageNum(), 2);
+        PageHelper.startPage(condition.getPageNum(), 5);
         final List<Subject> list = subjectMapper.findSubject(condition);
-        return new PageInfo(list, 5);
+        list.forEach(sub -> {
+            sub.setSubjectItems(subjectMapper.selectSubjectItemsById(sub.getId()));
+            sub.setSubjectAnswers(subjectMapper.selectSubjectAnswersById(sub.getId()));
+        });
+        return new PageInfo(list, 6);
     }
 
-    private Long LongRandom() {
-        Long subId = 1L;
-        Long n = subjectMapper.selectSubjectCount();
-        Long x[] = new Long[Integer.valueOf(String.valueOf(n))];
-        for (Long i = 0L; i < n; i++) {
-            x[Integer.valueOf(String.valueOf(i))] = i + 1;
-        }
-        for (int i = 0; i < 1; i++) {
-            int t = (int) (Math.random() * n) + 1;
-            Long temp = x[i];
-            x[i] = x[t];
-            x[t] = temp;
-            System.out.println(x[i]);
-        }
-        return null;
-    }
 }
