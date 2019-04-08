@@ -115,4 +115,20 @@
         set DELETE_FLAG = '0'
         where ID = #{id}
     </update>
+
+    <update id="updateSubject">
+        update tb_subject
+        set TITLE = #{title}
+        where ID = #{id}
+    </update>
+
+    <delete id="deleteItemsAndAnswers">
+        DELETE
+        tb_subject_items,
+        tb_answer
+        FROM
+        tb_subject_items LEFT JOIN tb_answer
+        ON tb_subject_items.SUBJECT_ID = tb_answer.SUBJECT_ID
+        WHERE tb_answer.SUBJECT_ID = #{id}
+    </delete>
 </mapper>

@@ -3,6 +3,9 @@ function simpleSubject() {
     $('#div_simpleSubject').css('display', 'block');
     $('#div_multipleSubject').css('display', 'none');
     $('#div_judgeSubject').css('display', 'none');
+    $('#div_updateSimpleSubject').css('display', 'none');
+    $('#div_updateMultipleSubject').css('display', 'none');
+    $('#div_updateJudgeSubject').css('display', 'none');
     $('#div_doSubject').css('display', 'none');
     $('#div_findSubject').css('display', 'none');
     clearForm();
@@ -13,6 +16,9 @@ function multipleSubject() {
     $('#div_simpleSubject').css('display', 'none');
     $('#div_multipleSubject').css('display', 'block');
     $('#div_judgeSubject').css('display', 'none');
+    $('#div_updateSimpleSubject').css('display', 'none');
+    $('#div_updateMultipleSubject').css('display', 'none');
+    $('#div_updateJudgeSubject').css('display', 'none');
     $('#div_doSubject').css('display', 'none');
     $('#div_findSubject').css('display', 'none');
     clearForm();
@@ -23,6 +29,9 @@ function judgeSubject() {
     $('#div_simpleSubject').css('display', 'none');
     $('#div_multipleSubject').css('display', 'none');
     $('#div_judgeSubject').css('display', 'block');
+    $('#div_updateSimpleSubject').css('display', 'none');
+    $('#div_updateMultipleSubject').css('display', 'none');
+    $('#div_updateJudgeSubject').css('display', 'none');
     $('#div_doSubject').css('display', 'none');
     $('#div_findSubject').css('display', 'none');
     clearForm();
@@ -33,6 +42,9 @@ function findSubject() {
     $('#div_simpleSubject').css('display', 'none');
     $('#div_multipleSubject').css('display', 'none');
     $('#div_judgeSubject').css('display', 'none');
+    $('#div_updateSimpleSubject').css('display', 'none');
+    $('#div_updateMultipleSubject').css('display', 'none');
+    $('#div_updateJudgeSubject').css('display', 'none');
     $('#div_doSubject').css('display', 'none');
     $('#div_findSubject').css('display', 'block');
     querySubmit(1);
@@ -43,6 +55,9 @@ function clearForm() {
     $('#div_simpleSubject form')[0].reset();
     $('#div_multipleSubject form')[0].reset();
     $('#div_judgeSubject form')[0].reset();
+    $('#div_updateSimpleSubject form')[0].reset();
+    $('#div_updateMultipleSubject form')[0].reset();
+    $('#div_updateJudgeSubject form')[0].reset();
 }
 
 // 开始做题
@@ -50,6 +65,9 @@ function doSubject() {
     $('#div_simpleSubject').css('display', 'none');
     $('#div_multipleSubject').css('display', 'none');
     $('#div_judgeSubject').css('display', 'none');
+    $('#div_updateSimpleSubject').css('display', 'none');
+    $('#div_updateMultipleSubject').css('display', 'none');
+    $('#div_updateJudgeSubject').css('display', 'none');
     $('#div_doSubject').css('display', 'block');
     $('#div_findSubject').css('display', 'none');
     var subList = randNum();
@@ -259,7 +277,7 @@ function selectTable(pageInfo) {
         answers.push("</td>");
         tableTr.push(answers.join(""));
         // 操作
-        tableTr.push("<td><button onclick=\"updateSub(" + list[i].id + "," + pageInfo.pageNum + ")\" class=\"btn btn-info\">编辑</button>&nbsp;&nbsp;<button onclick=\"deleteSub(" + list[i].id + "," + pageInfo.pageNum + ")\" class=\"btn btn-danger\">删除</button></td>");
+        tableTr.push("<td><button data-toggle=\"modal\" data-target=\"#myModal\" onclick=\"updateSub(" + list[i].id + "," + pageInfo.pageNum + ")\" class=\"btn btn-info\">编辑</button>&nbsp;&nbsp;<button onclick=\"deleteSub(" + list[i].id + "," + pageInfo.pageNum + ")\" class=\"btn btn-danger\">删除</button></td>");
 
         tableTr.push("</tr>");
         table.push(tableTr.join(""));
@@ -270,8 +288,11 @@ function selectTable(pageInfo) {
 
 // 点击编辑按钮
 function updateSub(id, pageNum) {
-    console.log("updateSub" + id);
-    ajaxdata("/subject/selectSubject", subNum[subNumIndex]).subject;
+    clearForm();
+    updateSubject(id);
+    $('#myModal').on('hide.bs.modal', function () {
+        querySubmit(pageNum);
+    });
 }
 
 // 点击删除按钮
@@ -280,9 +301,139 @@ function deleteSub(id, pageNum) {
     querySubmit(pageNum);
 }
 
-function updateSubject() {
-
+function updateSubject(id) {
+    var sub = ajaxdata("/subject/selectSubject", id).subject;
+    $('#div_updateSimpleSubject').css('display', 'none');
+    $('#div_updateMultipleSubject').css('display', 'none');
+    $('#div_updateJudgeSubject').css('display', 'none');
+    if (sub.subjectAnswers.length > 1) { // 多选题
+        $("#div_updateMultipleSubject form input[name='subId']").attr('value', sub.id);
+        $("#div_updateMultipleSubject form textarea[name='title']").html(sub.title);
+        for (var i = 0; i < sub.subjectItems.length; i++) {
+            $("#div_updateMultipleSubject form input[name='" + sub.subjectItems[i].options + "']").attr('value', sub.subjectItems[i].content);
+        }
+        for (var j = 0; j < sub.subjectAnswers.length; j++) {
+            $("#div_updateMultipleSubject form input[value='" + sub.subjectAnswers[j].answer + "']").prop("checked", true);
+        }
+        $('#div_updateMultipleSubject').css('display', 'block');
+    } else if (sub.subjectItems.length === 2) { // 判断题
+        $("#div_updateJudgeSubject form input[name='subId']").attr('value', sub.id);
+        $("#div_updateJudgeSubject form textarea[name='title']").html(sub.title);
+        for (var j = 0; j < sub.subjectAnswers.length; j++) {
+            $("#div_updateJudgeSubject form input[value='" + sub.subjectAnswers[j].answer + "']").prop("checked", true);
+        }
+        $('#div_updateJudgeSubject').css('display', 'block');
+    } else { // 单选题
+        $("#div_updateSimpleSubject form input[name='subId']").attr('value', sub.id);
+        $("#div_updateSimpleSubject form textarea[name='title']").html(sub.title);
+        for (var i = 0; i < sub.subjectItems.length; i++) {
+            $("#div_updateSimpleSubject form input[name='" + sub.subjectItems[i].options + "']").attr('value', sub.subjectItems[i].content);
+        }
+        for (var j = 0; j < sub.subjectAnswers.length; j++) {
+            $("#div_updateSimpleSubject form input[value='" + sub.subjectAnswers[j].answer + "']").prop("checked", true);
+        }
+        $('#div_updateSimpleSubject').css('display', 'block');
+    }
 }
+
+// 修改单选题
+function updateSimpleSubject() {
+    var formData = $('#div_updateSimpleSubject form').serializeArray();
+    var subjectItems = [];
+    var subjectAnswers = [];
+    for (var i = 2; i < formData.length; i++) {
+        if (i < 6) {
+            var subjectItem = {
+                options: formData[i].name,
+                content: formData[i].value
+            };
+            subjectItems.push(subjectItem);
+        } else {
+            var answer = {
+                answer: formData[i].value
+            };
+            subjectAnswers.push(answer);
+        }
+    }
+    var selectSubject = {
+        id: formData[0].value,
+        title: formData[1].value,
+        subjectItems: subjectItems,
+        subjectAnswers: subjectAnswers
+    };
+    console.log(JSON.stringify(selectSubject));
+    var ajaxState = ajaxdata("/subject/addSubject", selectSubject);
+    if (ajaxState != null) {
+        alert(ajaxState.state);
+    }
+}
+
+// 修改多选题
+function updateMultipleSubject() {
+    var formData = $('#div_updateMultipleSubject form').serializeArray();
+    var subjectItems = [];
+    var subjectAnswers = [];
+    for (var i = 2; i < formData.length; i++) {
+        if (i < 6) {
+            var subjectItem = {
+                options: formData[i].name,
+                content: formData[i].value
+            };
+            subjectItems.push(subjectItem);
+        } else {
+            var answer = {
+                answer: formData[i].value
+            };
+            subjectAnswers.push(answer);
+        }
+    }
+
+    var selectSubject = {
+        id: formData[0].value,
+        title: formData[1].value,
+        subjectItems: subjectItems,
+        subjectAnswers: subjectAnswers
+    };
+    console.log(JSON.stringify(selectSubject));
+    var ajaxState = ajaxdata("/subject/addSubject", selectSubject);
+    if (ajaxState != null) {
+        alert(ajaxState.state);
+    }
+}
+
+// 修改判断题
+function updateJudgeSubject() {
+    var formData = $('#div_updateJudgeSubject form').serializeArray();
+    var subjectItems = [];
+    var judgeTrue = {
+        options: "A",
+        content: "true"
+    };
+    var judgeFalse = {
+        options: "B",
+        content: "false"
+    };
+    subjectItems.push(judgeTrue);
+    subjectItems.push(judgeFalse);
+    var subjectAnswers = [];
+    var answer = {
+        answer: formData[2].value
+    };
+    subjectAnswers.push(answer);
+    var selectSubject = {
+        id: formData[0].value,
+        title: formData[1].value,
+        subjectItems: subjectItems,
+        subjectAnswers: subjectAnswers
+    };
+    console.log(JSON.stringify(selectSubject));
+    var ajaxState = ajaxdata("/subject/addSubject", selectSubject);
+    if (ajaxState != null) {
+        alert(ajaxState.state);
+    }
+}
+
+
 
 
 

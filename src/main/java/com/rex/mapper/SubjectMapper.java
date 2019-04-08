@@ -21,23 +21,21 @@ public interface SubjectMapper {
      *
      * @param subject 题目实体
      */
-    Integer addSubject(Subject subject);
+    void addSubject(Subject subject);
 
     /**
      * 新增题目
      *
      * @param subject 题目选项
-     * @return 返回新增题目选项结果
      */
-    Integer addSubjectItems(@Param("subject") Subject subject);
+    void addSubjectItems(@Param("subject") Subject subject);
 
     /**
      * 新增题目答案
      *
      * @param subject 题目答案
-     * @return 返回新增题目答案ID
      */
-    Integer addSubjectAnswer(@Param("subject") Subject subject);
+    void addSubjectAnswer(@Param("subject") Subject subject);
 
     /**
      * 根据ID查找题目
@@ -81,5 +79,20 @@ public interface SubjectMapper {
     /**
      * 删除题目
      */
-    Integer deleteSubject(@Param("id") Long id);
+    void deleteSubject(@Param("id") Long id);
+
+    /**
+     * 修改题目
+     *
+     * @param subject 要修改的题目实体
+     */
+    void updateSubject(Subject subject);
+
+    /**
+     * 删除题目选项和答案
+     *
+     * @param subject 要删除的题目实体
+     */
+    void deleteItemsAndAnswers(Subject subject);
+
 }

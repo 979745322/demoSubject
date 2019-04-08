@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 /**
@@ -48,12 +47,10 @@ public class SubjectServiceImpl implements SubjectService {
     @Override
     public String updateSubject(Subject subject) {
         try {
-            /*// 修改题目实体
+            // 修改题目实体
             subjectMapper.updateSubject(subject);
-            // 删除题目选项
-            subjectMapper.deleteSubjectItems(subject);
-            // 删除题目答案
-            subjectMapper.deleteSubjectAnswers(subject);*/
+            // 删除题目选项以及答案
+            subjectMapper.deleteItemsAndAnswers(subject);
             // 添加题目选项
             subjectMapper.addSubjectItems(subject);
             // 添加题目答案
