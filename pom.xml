@@ -74,7 +74,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <fork>true</fork>
+                    <mainClass>com.rex.DemoSubjectApplication</mainClass>
                 </configuration>
             </plugin>
         </plugins>
