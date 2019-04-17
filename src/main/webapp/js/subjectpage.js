@@ -228,7 +228,6 @@ function querySubmit(pageNum) {
     };
     var pageInfo = ajaxdata("/subject/findSubject", pageData).pageInfo;
     $('#selectSubTable').html(selectTable(pageInfo));
-    $("#selectSubTable").trigger("create");
     pageInfoBar(pageInfo, "div_pageBar");
 }
 
